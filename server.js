@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const dotenv = require('dotenv');
+const crypto = require('crypto');
 
 dotenv.config();
 const app = express();
@@ -8,7 +9,7 @@ app.use(express.json());
 
 let accessToken = '';
 let instanceUrl = '';
-
+let codeVerifier = ''; // PKCE verifier
 
 // 🌐 Root route
 app.get("/", (req, res) => {
@@ -18,13 +19,24 @@ app.get("/", (req, res) => {
   `);
 });
 
-// 🔑 Salesforce OAuth2 Login
+// 🔑 Salesforce OAuth2 Login with PKCE
 app.get('/login', (req, res) => {
-  const loginUrl = `https://login.salesforce.com/services/oauth2/authorize?response_type=code&client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}`;
+  // Generate code verifier + challenge
+  codeVerifier = crypto.randomBytes(32).toString('hex');
+  const codeChallenge = crypto
+    .createHash('sha256')
+    .update(codeVerifier)
+    .digest('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+
+  const loginUrl = `https://login.salesforce.com/services/oauth2/authorize?response_type=code&client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+
   res.redirect(loginUrl);
 });
 
-// 🔑 Salesforce OAuth2 Callback
+// 🔑 Salesforce OAuth2 Callback with PKCE
 app.get('/callback', async (req, res) => {
   try {
     const response = await axios.post('https://login.salesforce.com/services/oauth2/token', null, {
@@ -33,7 +45,8 @@ app.get('/callback', async (req, res) => {
         code: req.query.code,
         client_id: process.env.CLIENT_ID,
         client_secret: process.env.CLIENT_SECRET,
-        redirect_uri: process.env.REDIRECT_URI
+        redirect_uri: process.env.REDIRECT_URI,
+        code_verifier: codeVerifier   // 🔑 PKCE verifier
       }
     });
     accessToken = response.data.access_token;
@@ -43,7 +56,6 @@ app.get('/callback', async (req, res) => {
     res.status(400).json({ error: 'Authentication failed', details: error.response?.data || error.message });
   }
 });
-
 
 // =======================
 // 📡 Accounts CRUD Routes
@@ -103,8 +115,9 @@ app.delete('/accounts/:id', async (req, res) => {
   }
 });
 
-
-
+// =======================
+// 📡 Contacts CRUD Routes
+// =======================
 
 // READ Contacts
 app.get('/contacts', async (req, res) => {
@@ -160,10 +173,10 @@ app.delete('/contacts/:id', async (req, res) => {
   }
 });
 
-
-
 // =======================
-const PORT = 3000;
+// 🚀 Start Server
+// =======================
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
