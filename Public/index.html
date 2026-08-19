@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Salesforce CRUD App</title>
+</head>
+<body>
+  <h1>Salesforce Accounts & Contacts</h1>
+
+  <!-- Create Account Form -->
+  <h2>Create Account</h2>
+  <form id="accountForm">
+    <input type="text" id="accountName" placeholder="Account Name" required />
+    <button type="submit">Create Account</button>
+  </form>
+
+  <!-- Create Contact Form -->
+  <h2>Create Contact</h2>
+  <form id="contactForm">
+    <input type="text" id="lastName" placeholder="Last Name" required />
+    <input type="text" id="firstName" placeholder="First Name" />
+    <input type="email" id="email" placeholder="Email" />
+    <input type="text" id="phone" placeholder="Phone" />
+    <button type="submit">Create Contact</button>
+  </form>
+
+  <!-- Display Accounts -->
+  <h2>Accounts List</h2>
+  <ul id="accountsList"></ul>
+
+  <!-- Display Contacts -->
+  <h2>Contacts List</h2>
+  <ul id="contactsList"></ul>
+
+  <script src="app.js"></script>
+</body>
+</html>
