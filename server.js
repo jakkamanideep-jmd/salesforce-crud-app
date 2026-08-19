@@ -9,6 +9,15 @@ app.use(express.json());
 let accessToken = '';
 let instanceUrl = '';
 
+
+// 🌐 Root route
+app.get("/", (req, res) => {
+  res.send(`
+    <h2>Salesforce CRUD App</h2>
+    <p><a href="/login">Login to Salesforce</a></p>
+  `);
+});
+
 // 🔑 Salesforce OAuth2 Login
 app.get('/login', (req, res) => {
   const loginUrl = `https://login.salesforce.com/services/oauth2/authorize?response_type=code&client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}`;
