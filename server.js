@@ -61,7 +61,6 @@ app.get('/callback', async (req, res) => {
 // 📡 Accounts CRUD Routes
 // =======================
 
-// READ Accounts
 app.get('/accounts', async (req, res) => {
   try {
     const response = await axios.get(
@@ -74,7 +73,6 @@ app.get('/accounts', async (req, res) => {
   }
 });
 
-// CREATE Account
 app.post('/accounts', async (req, res) => {
   try {
     const response = await axios.post(
@@ -88,7 +86,6 @@ app.post('/accounts', async (req, res) => {
   }
 });
 
-// UPDATE Account
 app.put('/accounts/:id', async (req, res) => {
   try {
     await axios.patch(
@@ -102,7 +99,6 @@ app.put('/accounts/:id', async (req, res) => {
   }
 });
 
-// DELETE Account
 app.delete('/accounts/:id', async (req, res) => {
   try {
     await axios.delete(
@@ -119,7 +115,6 @@ app.delete('/accounts/:id', async (req, res) => {
 // 📡 Contacts CRUD Routes
 // =======================
 
-// READ Contacts
 app.get('/contacts', async (req, res) => {
   try {
     const response = await axios.get(
@@ -132,7 +127,6 @@ app.get('/contacts', async (req, res) => {
   }
 });
 
-// CREATE Contact
 app.post('/contacts', async (req, res) => {
   try {
     const response = await axios.post(
@@ -146,7 +140,6 @@ app.post('/contacts', async (req, res) => {
   }
 });
 
-// UPDATE Contact
 app.put('/contacts/:id', async (req, res) => {
   try {
     await axios.patch(
@@ -160,7 +153,6 @@ app.put('/contacts/:id', async (req, res) => {
   }
 });
 
-// DELETE Contact
 app.delete('/contacts/:id', async (req, res) => {
   try {
     await axios.delete(
