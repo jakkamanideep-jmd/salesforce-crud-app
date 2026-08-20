@@ -4,7 +4,29 @@
   <title>Salesforce CRUD App</title>
 </head>
 <body>
-  <h1>Salesforce Accounts & Contacts</h1>
+  <h1>Salesforce CRUD App</h1>
+
+  <!-- Login -->
+  <button onclick="window.location.href='/login'">Login to Salesforce</button>
+
+  <!-- Object Dropdown -->
+  <h2>Select Object</h2>
+  <select id="objectDropdown">
+    <option value="accounts">Accounts</option>
+    <option value="contacts">Contacts</option>
+    <option value="opportunities">Opportunities</option>
+    <option value="leads">Leads</option>
+    <option value="cases">Cases</option>
+  </select>
+
+  <!-- Records Table -->
+  <h2>Records</h2>
+  <table border="1" id="recordsTable">
+    <thead>
+      <tr id="tableHeader"></tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
 
   <!-- Create Account Form -->
   <h2>Create Account</h2>
@@ -22,14 +44,6 @@
     <input type="text" id="phone" placeholder="Phone" />
     <button type="submit">Create Contact</button>
   </form>
-
-  <!-- Display Accounts -->
-  <h2>Accounts List</h2>
-  <ul id="accountsList"></ul>
-
-  <!-- Display Contacts -->
-  <h2>Contacts List</h2>
-  <ul id="contactsList"></ul>
 
   <script src="app.js"></script>
 </body>

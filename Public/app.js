@@ -1,3 +1,40 @@
+// Load records dynamically
+document.getElementById('objectDropdown').addEventListener('change', async (e) => {
+  const object = e.target.value;
+  loadRecords(object);
+});
+
+async function loadRecords(object) {
+  let url = `/${object}`;
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const headerRow = document.getElementById('tableHeader');
+  const body = document.getElementById('tableBody');
+  headerRow.innerHTML = '';
+  body.innerHTML = '';
+
+  if (data.length > 0) {
+    // Build headers dynamically
+    Object.keys(data[0]).forEach(key => {
+      const th = document.createElement('th');
+      th.textContent = key;
+      headerRow.appendChild(th);
+    });
+
+    // Build rows
+    data.forEach(record => {
+      const tr = document.createElement('tr');
+      Object.values(record).forEach(val => {
+        const td = document.createElement('td');
+        td.textContent = val;
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+}
+
 // Create Account
 document.getElementById('accountForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -7,7 +44,7 @@ document.getElementById('accountForm').addEventListener('submit', async (e) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ Name: name })
   });
-  loadAccounts();
+  loadRecords('accounts');
 });
 
 // Create Contact
@@ -23,25 +60,8 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ LastName: lastName, FirstName: firstName, Email: email, Phone: phone })
   });
-  loadContacts();
+  loadRecords('contacts');
 });
 
-// Load Accounts
-async function loadAccounts() {
-  const res = await fetch('/accounts');
-  const accounts = await res.json();
-  const list = document.getElementById('accountsList');
-  list.innerHTML = accounts.map(acc => `<li>${acc.Name} (ID: ${acc.Id})</li>`).join('');
-}
-
-// Load Contacts
-async function loadContacts() {
-  const res = await fetch('/contacts');
-  const contacts = await res.json();
-  const list = document.getElementById('contactsList');
-  list.innerHTML = contacts.map(c => `<li>${c.LastName}, ${c.FirstName} - ${c.Email}</li>`).join('');
-}
-
 // Initial load
-loadAccounts();
-loadContacts();
+loadRecords('accounts');
