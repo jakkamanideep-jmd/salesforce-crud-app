@@ -46,12 +46,14 @@ async function loadRecords(object) {
         // Update button
         const updateBtn = document.createElement('button');
         updateBtn.textContent = 'Update';
-        updateBtn.onclick = () => updateRecord(object, record.Id);
+        updateBtn.className = 'btn btn-success btn-sm';
+        updateBtn.onclick = () => updateRecord(object, record.Id, record);
         tr.appendChild(updateBtn);
 
         // Delete button
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
+        deleteBtn.className = 'btn btn-danger btn-sm ms-2';
         deleteBtn.onclick = () => deleteRecord(object, record.Id);
         tr.appendChild(deleteBtn);
 
@@ -63,21 +65,52 @@ async function loadRecords(object) {
   }
 }
 
-// Update record
-async function updateRecord(object, id) {
-  const newValue = prompt(`Enter new value for ${object} record ${id}`);
-  if (!newValue || !newValue.trim()) {
-    alert("Value cannot be empty");
-    return;
-  }
-
+// Update record (multiple fields for contacts)
+async function updateRecord(object, id, record) {
   try {
-    const res = await fetch(`/${object}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ Name: newValue })
-    });
-    if (!res.ok) throw new Error("Failed to update record");
+    if (object === "contacts") {
+      const newFirstName = prompt("Enter new First Name", record.FirstName);
+      const newLastName = prompt("Enter new Last Name", record.LastName);
+      const newEmail = prompt("Enter new Email", record.Email);
+      const newPhone = prompt("Enter new Phone", record.Phone);
+
+      if (!newFirstName || !newLastName || !newEmail || !newPhone) {
+        alert("All fields are required");
+        return;
+      }
+      if (!newEmail.includes("@")) {
+        alert("Invalid email format");
+        return;
+      }
+      if (isNaN(newPhone)) {
+        alert("Phone must be numeric");
+        return;
+      }
+
+      const res = await fetch(`/contacts/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          FirstName: newFirstName,
+          LastName: newLastName,
+          Email: newEmail,
+          Phone: newPhone
+        })
+      });
+      if (!res.ok) throw new Error("Failed to update contact");
+    } else if (object === "accounts") {
+      const newName = prompt("Enter new Account Name", record.Name);
+      if (!newName || !newName.trim()) {
+        alert("Account Name is required");
+        return;
+      }
+      const res = await fetch(`/accounts/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ Name: newName })
+      });
+      if (!res.ok) throw new Error("Failed to update account");
+    }
     loadRecords(object);
   } catch (err) {
     alert(err.message);
@@ -102,7 +135,6 @@ document.getElementById('accountForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const name = document.getElementById('accountName').value;
 
-  // Validation
   if (!name.trim()) {
     alert("Account Name is required");
     return;
@@ -129,7 +161,6 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   const email = document.getElementById('email').value;
   const phone = document.getElementById('phone').value;
 
-  // Validation
   if (!lastName.trim() || !firstName.trim()) {
     alert("First and Last Name are required");
     return;
