@@ -17,7 +17,7 @@ let contacts = [
   { Id: '0032', LastName: 'Smith', FirstName: 'Jane', Email: 'jane@example.com', Phone: '9876543210' }
 ];
 
-// Accounts CRUD
+// ---------------- Accounts CRUD ----------------
 app.get('/accounts', (req, res) => res.json(accounts));
 
 app.post('/accounts', (req, res) => {
@@ -43,7 +43,7 @@ app.delete('/accounts/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// Contacts CRUD
+// ---------------- Contacts CRUD ----------------
 app.get('/contacts', (req, res) => res.json(contacts));
 
 app.post('/contacts', (req, res) => {
@@ -69,9 +69,10 @@ app.delete('/contacts/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// Default route
+// ---------------- Default route ----------------
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/Public/index.html');
 });
 
+// ---------------- Start server ----------------
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
