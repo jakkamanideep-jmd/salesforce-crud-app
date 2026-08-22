@@ -1,12 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');   // logging middleware
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(express.static('Public'));
-app.use(morgan('dev'));  // <-- log all requests
-
+app.use(morgan('dev'));  // log all requests
 
 // ---------------- In-memory data ----------------
 let accounts = [
